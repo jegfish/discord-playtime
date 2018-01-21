@@ -1,3 +1,6 @@
+import json
+import asyncio
+
 import discord
 from discord.ext import commands
 
@@ -11,18 +14,20 @@ class TrackerBot(commands.Bot):
     # Built off of this template: 
     # https://github.com/SourSpoon/Discord.py-Template
     def __init__(self):
-        super().init(command_prefix=commands.when_mentioned(), 
+        super().__init__(command_prefix=commands.when_mentioned, 
                      description=description)
+        with open("./data.json") as f:
+            self.tracked = json.load(f)
         self.loop.create_task(self.load_startup_extensions())
 
     async def load_startup_extensions(self):
-        """Attempts to load all .py files in /cogs/ as cog extensions
+        """Load all extensions
         """
 
         await self.wait_until_ready()
         # Ensure that on_ready has completed and finished printing
         await asyncio.sleep(1)
-        cogs = [x.stem for x in Path("cogs").glob("*.py")]
+        cogs = ("cogs.tracking")
         for extension in cogs:
             try:
                 self.load_extension(f"cogs.{extension}")
@@ -33,11 +38,11 @@ class TrackerBot(commands.Bot):
             print("-" * 10)
 
     async def on_ready(self):
-        print("LOGGED IN"
-              "-" * 10
-              f"Username: {self.user}"
-              f"ID: {self.user.id}"
+        print("LOGGED IN\n"
+              f"{'-' * 10}\n"
+              f"Username: {self.user}\n"
+              f"ID: {self.user.id}\n"
               f"discord.py version: {discord.__version__}")
 
 bot = TrackerBot()
-bot.run(config.token)
+bot.run(config.bot_token)
