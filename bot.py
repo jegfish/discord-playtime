@@ -13,6 +13,7 @@ class TrackerBot(commands.Bot):
     def __init__(self):
         super().init(command_prefix=commands.when_mentioned(), 
                      description=description)
+        self.loop.create_task(self.load_startup_extensions())
 
     async def load_startup_extensions(self):
         """Attempts to load all .py files in /cogs/ as cog extensions
