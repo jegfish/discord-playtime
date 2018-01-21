@@ -1,2 +1,4 @@
 config\.py
 discord-tracker-virtualenv/
+
+data\.json
