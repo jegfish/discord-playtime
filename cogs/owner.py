@@ -1,3 +1,9 @@
+import discord
+from discord.ext import commands
+
+def setup(bot):
+    bot.add_cog(Owner(bot))
+
 class Owner:
     """Bot owner commands
     """

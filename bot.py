@@ -16,8 +16,9 @@ class TrackerBot(commands.Bot):
     def __init__(self):
         super().__init__(command_prefix=commands.when_mentioned, 
                      description=description)
+        self.tracked = {}
         with open("./data.json") as f:
-            self.tracked = json.load(f)
+            self.user_games = json.load(f)
         self.loop.create_task(self.load_startup_extensions())
 
     async def load_startup_extensions(self):
@@ -27,10 +28,11 @@ class TrackerBot(commands.Bot):
         await self.wait_until_ready()
         # Ensure that on_ready has completed and finished printing
         await asyncio.sleep(1)
-        cogs = ("cogs.tracking")
-        for extension in cogs:
+        startup_extensions = ("cogs.tracking",
+                              "cogs.owner")
+        for extension in startup_extensions:
             try:
-                self.load_extension(f"cogs.{extension}")
+                self.load_extension(extension)
                 print(f"Loaded {extension}")
             except Exception as e:
                 error = f"{extension}\n {type(e).__name__} : {e}"

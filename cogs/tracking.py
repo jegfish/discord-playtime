@@ -1,3 +1,5 @@
+import time
+
 import discord
 from discord.ext import commands
 
@@ -5,13 +7,7 @@ from discord.ext import commands
 
 # {
 #     userID: {
-#         current_game: {
-#             start_time: time,
-#             recent_time: time
-#         },
-#         games: {
-#             unique_game_name: time_played
-#         }
+#         unique_game_name: time_played
 #     }
 # }
 
@@ -26,7 +22,19 @@ class Tracking:
         self.bot = bot
 
     async def on_member_update(self, before, after):
-        print(after.game.name)
+        if after.bot:
+            return
+
+        current_time = time.time()
+        if after.id not in self.bot.tracked:
+            self.bot.tracked[after.id] = {
+                "start_time": current_time,
+                "recent_time": current_time
+            }
+            return
+
+        if before.game == after.game:
+            return
 
     @commands.command()
     async def test(self, ctx):
