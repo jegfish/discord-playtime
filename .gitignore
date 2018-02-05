@@ -6,3 +6,5 @@ data\.json
 *.pyc
 
 node_modules/
+
+config\.json
