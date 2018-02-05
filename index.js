@@ -1,6 +1,34 @@
 const Discord = require("discord.js");
 
+const config = require("./config.json");
+
+const commands = {
+    "ping": {
+        invoke: (bot, message) => {
+            message.channel.send(`Pong! ${bot.ping}ms`);
+        }
+    },
+
+    "help": {
+        invoke: (bot, message) => {
+            const embed = new Discord.RichEmbed()
+                .setColor(0x7289DA)
+                .addField("help", "Shows this message.");
+
+            message.channel.send({embed});
+        }
+    }
+};
+
 class Bot extends Discord.Client {
+    constructor() {
+        super();
+
+        this.on("message", (message) => {
+            this.process_commands(message);
+        });
+    }
+
     get mention() {
         return `<@${this.user.id}>`;
     }
@@ -32,6 +60,10 @@ bot.on("ready", () => {
     console.log("-".repeat(15));
     console.log(`Username: ${bot.user.username}#${bot.user.discriminator}`);
     console.log(`ID: ${bot.user.id}`);
+});
+
+bot.on("guildMemberUpdate", (before, after) => {
+
 });
 
 bot.login(config.token);
