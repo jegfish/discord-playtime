@@ -4,3 +4,5 @@ discord-tracker-virtualenv/
 data\.json
 
 *.pyc
+
+node_modules/
