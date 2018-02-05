@@ -1,4 +1,6 @@
 const Discord = require("discord.js");
+const Enmap = require("enmap");
+const EnmapLevel = require("enmap-level");
 
 const config = require("./config.json");
 
@@ -24,6 +26,7 @@ class Bot extends Discord.Client {
     constructor() {
         super();
 
+        this.db = new Enmap({ provider: new EnmapLevel({ name: "test" }) });
         this.on("message", (message) => {
             this.process_commands(message);
         });
@@ -39,7 +42,7 @@ class Bot extends Discord.Client {
 
     process_commands(message) {
         // Only respond to explicitly invoked commands
-        if (!message.content.startsWith(this.prefix)) { return }
+        if (!message.content.startsWith(this.prefix)) { return; }
 
         const args = message.content.slice(this.prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
@@ -62,8 +65,23 @@ bot.on("ready", () => {
     console.log(`ID: ${bot.user.id}`);
 });
 
-bot.on("guildMemberUpdate", (before, after) => {
+/*
+Basic setup of the user's data:
 
+{
+ userID: {
+     unique_game_name: time_played
+ }
+}
+*/
+
+bot.on("presenceUpdate", (before, after) => {
+    if (after.bot) { return; }
+
+    if (before.presence.game.equals(after.presence.game)) { return; }
+
+    console.log(before.presence.game.name);
+    console.log(after.presence.game.name);
 });
 
 bot.login(config.token);
