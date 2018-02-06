@@ -26,7 +26,8 @@ class Bot extends Discord.Client {
     constructor() {
         super();
 
-        this.db = new Enmap({ provider: new EnmapLevel({ name: "test" }) });
+        this.games = new Enmap({ provider: new EnmapLevel({ name: "games" }) });
+        this.tracked = new Enmap();
         this.on("message", (message) => {
             this.process_commands(message);
         });
@@ -42,7 +43,7 @@ class Bot extends Discord.Client {
 
     process_commands(message) {
         // Only respond to explicitly invoked commands
-        if (!message.content.startsWith(this.prefix)) { return; }
+        if (!message.content.startsWith(this.prefix)) return;
 
         const args = message.content.slice(this.prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
@@ -69,19 +70,98 @@ bot.on("ready", () => {
 Basic setup of the user's data:
 
 {
- userID: {
-     unique_game_name: time_played
- }
+userID: {
+    unique_game_name: playtime,
+
+    current_game: {
+        start: Date,
+        recent: Date    
+    }
+}
 }
 */
 
 bot.on("presenceUpdate", (before, after) => {
-    if (after.bot) { return; }
+    if (after.bot) return;
 
-    if (before.presence.game.equals(after.presence.game)) { return; }
+    // Handle if they aren't playing a game
+    let before_game;
+    if (before.presence.game) {
+        before_game = before.presence.game.name;
 
-    console.log(before.presence.game.name);
-    console.log(after.presence.game.name);
+    } else {
+        before_game = null;
+    }
+    let after_game;
+    if (after.presence.game) {
+        after_game = after.presence.game.name;
+
+    } else {
+        after_game = null;
+    }
+
+    let author_games = bot.games.get(after.id);
+    let current_game = bot.tracked.get(after.id);
+    const now = Date.now();
+    if (author_games === undefined) {
+        if (before_game !== null) {
+            author_games[before_game] = 0;
+        }
+        if (after_game !== null) {
+            author_games[after_game] = 0;
+        }
+
+    }
+    if (current_game === undefined) {
+        if (after_game !== null) {
+            current_game = {
+                "name": after_game,
+                "start": now,
+                "recent": now
+            }
+        }
+
+    } else {
+        if (after_game === current_game["name"]) {
+            current_game["recent"] = now;
+            if (author_games[after_game]) {
+                author_games[after_game] += current_game["now"] - current_game["start"];
+
+            } else {
+                author_games[after_game] = 0;
+            }
+
+        } else if (before_game === current_game["name"]) {
+            if (before_game === after_game) {
+                if (author_games[before_game]) {
+                    author_games[before_game] += current_game["now"] - current_game["start"];
+
+                } else {
+                    author_games[before_game] = 0;
+                }
+            } else {
+                current_game["recent"] = now;
+                if (author_games[before_game]) {
+                    author_games[before_game] += current_game["now"] - current_game["start"];
+                } else {
+                    author_games[before_game] = 0;
+                }
+                // Change current_game
+                current_game = {
+                    "name": after_game,
+                    "start": now,
+                    "recent": now
+                }
+            }
+        }
+        /*
+        Shouldn't need an else. current_game isn't persistent, and is always tracked
+        so either before_game or after_game will be current_game.
+        */
+    }
+
+    bot.db.set(after.id, author_games);
+    bot.tracked.set(after.id, current_game);
 });
 
 bot.login(config.token);
