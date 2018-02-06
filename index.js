@@ -135,7 +135,7 @@ bot.on("presenceUpdate", (before, after) => {
         if (after_game === current_game["name"]) {
             current_game["recent"] = now;
             if (author_games.hasOwnProperty(after_game)) {
-                author_games[after_game] += current_game["now"] - current_game["start"];
+                author_games[after_game] += current_game["recent"] - current_game["start"];
 
             } else {
                 author_games[after_game] = 0;
