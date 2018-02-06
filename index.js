@@ -19,6 +19,15 @@ const commands = {
 
             message.channel.send({embed});
         }
+    },
+
+    "games": {
+        invoke: (bot, message) => {
+            author_games = bot.games.get(message.author.id);
+            current_game = bot.tracked.get(message.author.id);
+            console.log(`author_games: \n${JSON.stringify(author_games, null, 4)}`);
+            console.log(`current_game: \n${JSON.stringify(current_game, null, 4)}`);
+        }
     }
 };
 
@@ -104,6 +113,7 @@ bot.on("presenceUpdate", (before, after) => {
     let current_game = bot.tracked.get(after.id);
     const now = Date.now();
     if (author_games === undefined) {
+        author_games = {};
         if (before_game !== null) {
             author_games[before_game] = 0;
         }
@@ -124,7 +134,7 @@ bot.on("presenceUpdate", (before, after) => {
     } else {
         if (after_game === current_game["name"]) {
             current_game["recent"] = now;
-            if (author_games[after_game]) {
+            if (author_games.hasOwnProperty(after_game)) {
                 author_games[after_game] += current_game["now"] - current_game["start"];
 
             } else {
@@ -133,16 +143,16 @@ bot.on("presenceUpdate", (before, after) => {
 
         } else if (before_game === current_game["name"]) {
             if (before_game === after_game) {
-                if (author_games[before_game]) {
-                    author_games[before_game] += current_game["now"] - current_game["start"];
+                if (author_games.hasOwnProperty(before_game)) {
+                    author_games[before_game] += current_game["recent"] - current_game["start"];
 
                 } else {
                     author_games[before_game] = 0;
                 }
             } else {
                 current_game["recent"] = now;
-                if (author_games[before_game]) {
-                    author_games[before_game] += current_game["now"] - current_game["start"];
+                if (author_games.hasOwnProperty(before_game)) {
+                    author_games[before_game] += current_game["recent"] - current_game["start"];
                 } else {
                     author_games[before_game] = 0;
                 }
@@ -160,7 +170,7 @@ bot.on("presenceUpdate", (before, after) => {
         */
     }
 
-    bot.db.set(after.id, author_games);
+    bot.games.set(after.id, author_games);
     bot.tracked.set(after.id, current_game);
 });
 
