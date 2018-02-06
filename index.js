@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const Enmap = require("enmap");
 const EnmapLevel = require("enmap-level");
+const moment = require("moment");
 
 const config = require("./config.json");
 
@@ -14,7 +15,7 @@ const commands = {
     "help": {
         invoke: (bot, message) => {
             const embed = new Discord.RichEmbed()
-                .setColor(0x7289DA)
+                .setColor(config.embed_color)
                 .addField("help", "Shows this message.");
 
             message.channel.send({embed});
@@ -25,8 +26,12 @@ const commands = {
         invoke: (bot, message) => {
             author_games = bot.games.get(message.author.id);
             current_game = bot.tracked.get(message.author.id);
-            console.log(`author_games: \n${JSON.stringify(author_games, null, 4)}`);
-            console.log(`current_game: \n${JSON.stringify(current_game, null, 4)}`);
+            console.log(JSON.stringify(author_games));
+            const embed = new Discord.RichEmbed()
+                .setColor(config.embed_color)
+                .addField(Object.keys(author_games)[0], moment.duration(Object.values(author_games)[0], "milliseconds").humanize());
+
+            message.channel.send({ embed });
         }
     }
 };
@@ -91,6 +96,7 @@ userID: {
 */
 
 bot.on("presenceUpdate", (before, after) => {
+    console.log("presenceUpdate detected.");
     if (after.bot) return;
 
     // Handle if they aren't playing a game
