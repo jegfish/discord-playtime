@@ -25,8 +25,11 @@ const commands = {
     "games": {
         invoke: (bot, message) => {
             author_games = bot.games.get(message.author.id);
-            current_game = bot.tracked.get(message.author.id);
-            console.log(JSON.stringify(author_games));
+            if (!author_games) {
+                message.channel.send("I don't have any games data on you.");
+                return;
+            }
+
             const embed = new Discord.RichEmbed()
                 .setColor(config.embed_color)
                 .addField(Object.keys(author_games)[0], moment.duration(Object.values(author_games)[0], "milliseconds").humanize());
