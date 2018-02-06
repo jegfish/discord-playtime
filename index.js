@@ -96,7 +96,7 @@ userID: {
 */
 
 bot.on("presenceUpdate", (before, after) => {
-    console.log("presenceUpdate detected.");
+    console.log(`presenceUpdate detected from ${after.user.username}#${after.user.discriminator}`);
     if (after.bot) return;
 
     // Handle if they aren't playing a game
@@ -132,8 +132,7 @@ bot.on("presenceUpdate", (before, after) => {
         if (after_game !== null) {
             current_game = {
                 "name": after_game,
-                "start": now,
-                "recent": now
+                "last_update": now
             }
         }
 
@@ -141,7 +140,7 @@ bot.on("presenceUpdate", (before, after) => {
         if (after_game === current_game["name"]) {
             current_game["recent"] = now;
             if (author_games.hasOwnProperty(after_game)) {
-                author_games[after_game] = current_game["recent"] - current_game["start"];
+                author_games[after_game] += now - current_game["last_update"];
 
             } else {
                 author_games[after_game] = 0;
@@ -150,7 +149,7 @@ bot.on("presenceUpdate", (before, after) => {
         } else if (before_game === current_game["name"]) {
             if (before_game === after_game) {
                 if (author_games.hasOwnProperty(before_game)) {
-                    author_games[before_game] = current_game["recent"] - current_game["start"];
+                    author_games[before_game] += now - current_game["last_update"];
 
                 } else {
                     author_games[before_game] = 0;
@@ -158,15 +157,14 @@ bot.on("presenceUpdate", (before, after) => {
             } else {
                 current_game["recent"] = now;
                 if (author_games.hasOwnProperty(before_game)) {
-                    author_games[before_game] = current_game["recent"] - current_game["start"];
+                    author_games[before_game] += now - current_game["last_update"];
                 } else {
                     author_games[before_game] = 0;
                 }
                 // Change current_game
                 current_game = {
                     "name": after_game,
-                    "start": now,
-                    "recent": now
+                    "last_update": now
                 }
             }
         }
