@@ -200,12 +200,10 @@ bot.on("presenceUpdate", async (before, after) => {
                 } else if (before_game !== null) {
                     author_games[before_game] = 0;
                 }
-                if (after_game !== null) {
-                    // Change current_game
-                    current_game = {
-                        "name": after_game,
-                        "last_update": now
-                    }
+                // Change current_game
+                current_game = {
+                    "name": after_game,
+                    "last_update": now
                 }
             }
         }
