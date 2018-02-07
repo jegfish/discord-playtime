@@ -19,7 +19,7 @@ const commands = {
                 .setTitle("My Commands")
                 .addField("help", "Shows this message.")
                 .addField("games [page]", "Shows your game playtimes.")
-                .addField("ignored", "Prevents your game playtimes from being tracked. " + 
+                .addField("ignore", "Prevents your game playtimes from being tracked. " + 
                                      "I will still listen to your commands, so you " +
                                      "can use this one again to enable playtime tracking.")
                 .setFooter(`My prefix is @${bot.user.username}`);
