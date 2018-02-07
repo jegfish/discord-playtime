@@ -18,7 +18,8 @@ const commands = {
                 .setColor(config.embed_color)
                 .setTitle("My Commands")
                 .addField("help", "Shows this message.")
-                .addField("games <page>", "Shows your game playtimes.");
+                .addField("games [page]", "Shows your game playtimes.")
+                .setFooter(`My prefix is @${bot.user.username}`);
 
             message.channel.send({embed});
         }
@@ -199,10 +200,12 @@ bot.on("presenceUpdate", async (before, after) => {
                 } else {
                     author_games[before_game] = 0;
                 }
-                // Change current_game
-                current_game = {
-                    "name": after_game,
-                    "last_update": now
+                if (after_game !== null) {
+                    // Change current_game
+                    current_game = {
+                        "name": after_game,
+                        "last_update": now
+                    }
                 }
             }
         }
