@@ -71,8 +71,8 @@ class Bot extends Discord.Client {
     }
 
     async handle_message(message) {
-        // Only respond to explicitly invoked commands
-        if (!message.content.startsWith(this.prefix)) return;
+        // Only respond to explicitly invoked commands and non-bots
+        if (!message.content.startsWith(this.prefix) || message.author.bot) return;
 
         const args = message.content.slice(this.prefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
