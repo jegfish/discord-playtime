@@ -1,2 +1,3 @@
-# Tracker Bot
-Tracker is a Discord bot that keeps track of user's presence times. Usually presence is a game you are playing and showing to others that you are playing it.
+# Discord Playtime Tracker
+Playtime Tracker is a Discord bot that keeps track of how long user's have played games.
+Playing a game means that the user is showing a 'playing' message on their profile.

@@ -1,21 +1,21 @@
 {
-  "name": "discord-tracker",
+  "name": "discord-playtime",
   "version": "1.0.0",
-  "description": "A Discord bot that keeps track of your game playing.",
-  "main": "index.js",
+  "description": "A Discord bot that keeps track of your game playtimes.",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Altarrel/discord-tracker.git"
+    "url": "git+https://github.com/Altarrel/discord-playtime.git"
   },
   "author": "Altarrel",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Altarrel/discord-tracker/issues"
+    "url": "https://github.com/Altarrel/discord-playtime/issues"
   },
-  "homepage": "https://github.com/Altarrel/discord-tracker#readme",
+  "homepage": "https://github.com/Altarrel/discord-playtime#readme",
   "dependencies": {
     "discord.js": "^11.3.0",
     "enmap": "^0.4.2",
