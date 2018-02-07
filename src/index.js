@@ -181,7 +181,7 @@ bot.on("presenceUpdate", async (before, after) => {
             current_game["recent"] = now;
             if (author_games.hasOwnProperty(after_game)) {
                 author_games[after_game] += now - current_game["last_update"];
-            } else {
+            } else if (after_game !== null) {
                 author_games[after_game] = 0;
             }
             current_game["last_update"] = now;
@@ -190,14 +190,14 @@ bot.on("presenceUpdate", async (before, after) => {
             if (before_game === after_game) {
                 if (author_games.hasOwnProperty(before_game)) {
                     author_games[before_game] += now - current_game["last_update"];
-                } else {
+                } else if (before_game !== null) {
                     author_games[before_game] = 0;
                 }
                 current_game["last_update"] = now;
             } else {
                 if (author_games.hasOwnProperty(before_game)) {
                     author_games[before_game] += now - current_game["last_update"];
-                } else {
+                } else if (before_game !== null) {
                     author_games[before_game] = 0;
                 }
                 if (after_game !== null) {
