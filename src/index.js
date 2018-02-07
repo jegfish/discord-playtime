@@ -19,6 +19,9 @@ const commands = {
                 .setTitle("My Commands")
                 .addField("help", "Shows this message.")
                 .addField("games [page]", "Shows your game playtimes.")
+                .addField("ignored", "Prevents your game playtimes from being tracked. " + 
+                                     "I will still listen to your commands, so you " +
+                                     "can use this one again to enable playtime tracking.")
                 .setFooter(`My prefix is @${bot.user.username}`);
 
             message.channel.send({embed});
@@ -49,6 +52,23 @@ const commands = {
             embed.setFooter(`Showing page ${page + 1} of ${pages.length}.`);
             message.channel.send({ embed });
         }
+    },
+
+    "ignore": {
+        invoke: async (bot, message) => {
+            let ignored = bot.ignored.get(message.author.id);
+            if (!ignored) {
+                bot.ignored.set(message.author.id, true);
+                bot.games.delete(message.author.id);
+                bot.tracked.delete(message.author.id);
+                message.channel.send(`${message.author.username}#${message.author.discriminator} | ` +
+                                     "I will no longer track your game playtimes.");
+            } else {
+                bot.ignored.delete(message.author.id);
+                message.channel.send(`${message.author.username}#${message.author.discriminator} | ` +
+                                     "I will now track your game playtimes.");
+            }
+        }
     }
 };
 
@@ -58,6 +78,7 @@ class Bot extends Discord.Client {
 
         this.games = new Enmap({ provider: new EnmapLevel({ name: "games" }) });
         this.tracked = new Enmap();
+        this.ignored = new Enmap({ provider: new EnmapLevel({ name: "ignored" }) });
         this.on("message", async (message) => {
             await this.handle_message(message);
         });
@@ -138,6 +159,8 @@ userID: {
 
 bot.on("presenceUpdate", async (before, after) => {
     if (after.user.bot) return;
+
+    if (bot.ignored.get(after.user.id)) return;
 
     // Handle if they aren't playing a game
     let before_game;
