@@ -16,24 +16,36 @@ const commands = {
         invoke: async (bot, message) => {
             const embed = new Discord.RichEmbed()
                 .setColor(config.embed_color)
-                .addField("help", "Shows this message.");
+                .setTitle("My Commands")
+                .addField("help", "Shows this message.")
+                .addField("games <page>", "Shows your game playtimes.");
 
             message.channel.send({embed});
         }
     },
 
     "games": {
-        invoke: async (bot, message) => {
+        invoke: async (bot, message, page) => {
             author_games = bot.games.get(message.author.id);
             if (!author_games) {
-                message.channel.send("I don't have any games data on you.");
+                message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data on your playtimes.`);
                 return;
             }
 
-            const embed = new Discord.RichEmbed()
-                .setColor(config.embed_color)
-                .addField(Object.keys(author_games)[0], moment.duration(Object.values(author_games)[0], "milliseconds").humanize());
+            page = ~~page - 1;
+            let pages = await bot.paginate_games_embed(author_games);
 
+            if (pages.length === 0) {
+                message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data on your playtimes.`);
+            }
+
+            if (page < 0 || page > pages.length - 1) {
+                page = 0;
+            }
+
+            let embed = pages[page];
+            embed.setTitle(`${message.author.username}#${message.author.discriminator} | Your Playtimes`);
+            embed.setFooter(`Showing page ${page + 1} of ${pages.length}.`);
             message.channel.send({ embed });
         }
     }
@@ -45,8 +57,8 @@ class Bot extends Discord.Client {
 
         this.games = new Enmap({ provider: new EnmapLevel({ name: "games" }) });
         this.tracked = new Enmap();
-        this.on("message", (message) => {
-            this.process_commands(message).then().catch(console.err);
+        this.on("message", async (message) => {
+            await this.handle_message(message);
         });
     }
 
@@ -58,7 +70,7 @@ class Bot extends Discord.Client {
         return this.mention;
     }
 
-    async process_commands(message) {
+    async handle_message(message) {
         // Only respond to explicitly invoked commands
         if (!message.content.startsWith(this.prefix)) return;
 
@@ -71,6 +83,31 @@ class Bot extends Discord.Client {
             // If the message was just the mention
             commands["help"].invoke(this, message, ...args);
         }
+    }
+
+    async paginate_games_embed(games) {
+        let pages = [];
+        let i = 0;
+
+        function new_embed() {
+            let new_em = new Discord.RichEmbed();
+            new_em.setColor(config.embed_color);
+            return new_em;
+        }
+
+        let embed = new_embed();
+        for (let name in games) {
+            if (i >= 9) {
+                i = 0;
+                pages.push(embed);
+                embed = new_embed();
+            }
+
+            embed.addField(name, moment.duration(games[name], "milliseconds").humanize(), true);
+            i++;
+        }
+        if (!(embed in Object.values(pages))) pages.push(embed);
+        return pages;
     }
 }
 
@@ -98,7 +135,7 @@ userID: {
 }
 */
 
-bot.on("presenceUpdate", (before, after) => {
+bot.on("presenceUpdate", async (before, after) => {
     console.log(`presenceUpdate detected from ${after.user.username}#${after.user.discriminator}`);
     if (after.bot) return;
 
