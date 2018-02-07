@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const Enmap = require("enmap");
 const EnmapLevel = require("enmap-level");
-const moment = require("moment");
+const humanize_duration = require("humanize-duration");
 
 const config = require("./config.json");
 
@@ -103,7 +103,7 @@ class Bot extends Discord.Client {
                 embed = new_embed();
             }
 
-            embed.addField(name, moment.duration(games[name], "milliseconds").humanize(), true);
+            embed.addField(name, humanize_duration(games[name], { largest: 3, round: true }), true);
             i++;
         }
         if (!(embed in Object.values(pages))) pages.push(embed);

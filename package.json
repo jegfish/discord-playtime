@@ -20,6 +20,6 @@
     "discord.js": "^11.3.0",
     "enmap": "^0.4.2",
     "enmap-level": "^1.0.0",
-    "moment": "^2.20.1"
+    "humanize-duration": "^3.12.1"
   }
 }
