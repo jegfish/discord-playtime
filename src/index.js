@@ -136,8 +136,7 @@ userID: {
 */
 
 bot.on("presenceUpdate", async (before, after) => {
-    console.log(`presenceUpdate detected from ${after.user.username}#${after.user.discriminator}`);
-    if (after.bot) return;
+    if (after.user.bot) return;
 
     // Handle if they aren't playing a game
     let before_game;
@@ -181,21 +180,20 @@ bot.on("presenceUpdate", async (before, after) => {
             current_game["recent"] = now;
             if (author_games.hasOwnProperty(after_game)) {
                 author_games[after_game] += now - current_game["last_update"];
-
             } else {
                 author_games[after_game] = 0;
             }
+            current_game["last_update"] = now;
 
         } else if (before_game === current_game["name"]) {
             if (before_game === after_game) {
                 if (author_games.hasOwnProperty(before_game)) {
                     author_games[before_game] += now - current_game["last_update"];
-
                 } else {
                     author_games[before_game] = 0;
                 }
+                current_game["last_update"] = now;
             } else {
-                current_game["recent"] = now;
                 if (author_games.hasOwnProperty(before_game)) {
                     author_games[before_game] += now - current_game["last_update"];
                 } else {
