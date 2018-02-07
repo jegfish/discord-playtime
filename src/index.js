@@ -125,7 +125,7 @@ class Bot extends Discord.Client {
                 embed = new_embed();
             }
 
-            embed.addField(name, humanize_duration(games[name], { largest: 3, round: true }), true);
+            embed.addField(name, humanize_duration(games[name], { largest: 2, round: true }), true);
             i++;
         }
         if (!(embed in Object.values(pages))) pages.push(embed);
