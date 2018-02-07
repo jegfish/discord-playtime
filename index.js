@@ -7,13 +7,13 @@ const config = require("./config.json");
 
 const commands = {
     "ping": {
-        invoke: (bot, message) => {
+        invoke: async (bot, message) => {
             message.channel.send(`Pong! ${bot.ping}ms`);
         }
     },
 
     "help": {
-        invoke: (bot, message) => {
+        invoke: async (bot, message) => {
             const embed = new Discord.RichEmbed()
                 .setColor(config.embed_color)
                 .addField("help", "Shows this message.");
@@ -23,7 +23,7 @@ const commands = {
     },
 
     "games": {
-        invoke: (bot, message) => {
+        invoke: async (bot, message) => {
             author_games = bot.games.get(message.author.id);
             if (!author_games) {
                 message.channel.send("I don't have any games data on you.");
@@ -46,7 +46,7 @@ class Bot extends Discord.Client {
         this.games = new Enmap({ provider: new EnmapLevel({ name: "games" }) });
         this.tracked = new Enmap();
         this.on("message", (message) => {
-            this.process_commands(message);
+            this.process_commands(message).then().catch(console.err);
         });
     }
 
@@ -58,7 +58,7 @@ class Bot extends Discord.Client {
         return this.mention;
     }
 
-    process_commands(message) {
+    async process_commands(message) {
         // Only respond to explicitly invoked commands
         if (!message.content.startsWith(this.prefix)) return;
 
