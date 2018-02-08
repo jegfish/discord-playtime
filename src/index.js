@@ -98,6 +98,8 @@ bot.on("presenceUpdate", async (before, after) => {
 
     if (bot.ignored.get(after.user.id)) return;
 
+    if (before.presence.game.equals(after.presence.game)) return;
+
     // Handle if they aren't playing a game
     let before_game;
     if (before.presence.game) {

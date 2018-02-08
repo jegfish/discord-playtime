@@ -15,6 +15,7 @@ const commands = {
             .addField("ignore", "Prevents your game playtimes from being tracked. " + 
                                  "I will still listen to your commands, so you " +
                                  "can use this one again to enable playtime tracking.")
+            .addField("invite", "Gives you the invite link for the bot.")
             .setFooter(`My prefix is @${bot.user.username}`);
 
         message.channel.send({embed});
