@@ -1,4 +1,4 @@
 {
-    "token": "YOUR BOT TOKEN HERE",
+    "bot_token": "YOUR BOT TOKEN HERE",
     "embed_color": "#7289DA"
 }

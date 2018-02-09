@@ -176,4 +176,4 @@ bot.on("presenceUpdate", async (before, after) => {
     bot.tracked.set(after.id, current_game);
 });
 
-bot.login(config.token);
+bot.login(config.bot_token);
