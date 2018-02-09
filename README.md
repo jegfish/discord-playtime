@@ -12,3 +12,4 @@ If you have an issue with or suggestion for the bot, please [join the help serve
 - help -> Lists commands.
 - games [page] -> Lists your games and their playtimes.
 - ignore -> Toggles playtime tracking. On by default.
+- invite -> Gives you the link to add the bot to your server.
