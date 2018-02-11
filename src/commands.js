@@ -19,18 +19,23 @@ const commands = {
         message.channel.send({embed});
     },
 
-    "games": async (bot, message, page) => {
-        author_games = bot.games.get(message.author.id);
-        if (!author_games) {
-            message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data on your playtimes.`);
+    "games": async (bot, message, page, user) => {
+        const target = await bot.user_convert(user);
+        if (!target) {
+            target = message.author;
+        }
+        
+        target_games = bot.games.get(target.id);
+        if (!target_games) {
+            message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data for ${target.username}#${target.discriminator}`);
             return;
         }
 
         page = ~~page - 1;
-        let pages = await bot.paginate_games_embed(author_games);
+        let pages = await bot.paginate_games_embed(target_games);
 
         if (pages.length === 0) {
-            message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data on your playtimes.`);
+            message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data for ${target.username}#${target.discriminator}`);
         }
 
         if (page < 0 || page > pages.length - 1) {
@@ -38,7 +43,7 @@ const commands = {
         }
 
         let embed = pages[page];
-        embed.setTitle(`${message.author.username}#${message.author.discriminator} | Your Playtimes`);
+        embed.setTitle(`${message.author.username}#${message.author.discriminator} | ${target.username}#${target.discriminator}'s Playtimes`);
         embed.setFooter(`Showing page ${page + 1} of ${pages.length}.`);
         message.channel.send({ embed });
     },
