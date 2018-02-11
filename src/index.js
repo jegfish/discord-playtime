@@ -65,6 +65,9 @@ class Bot extends Discord.Client {
     }
 
     async user_convert(text) {
+        if (!text) {
+            return null;
+        }
         let result = null;
         const mention = text.match(/<@!?(\d+)>/);
         if (mention !== null) {

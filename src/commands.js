@@ -20,11 +20,11 @@ const commands = {
     },
 
     "games": async (bot, message, page, user) => {
-        const target = await bot.user_convert(user);
+        let target = await bot.user_convert(user);
         if (!target) {
             target = message.author;
         }
-        
+
         target_games = bot.games.get(target.id);
         if (!target_games) {
             message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data for ${target.username}#${target.discriminator}`);
