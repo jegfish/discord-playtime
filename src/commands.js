@@ -11,7 +11,7 @@ const commands = {
             .setColor(config.embed_color)
             .setTitle("My Commands")
             .addField("help", "Shows this message.")
-            .addField("games [page]", "Shows your game playtimes.")
+            .addField("games <page> <user>", "Shows your or another user's game playtimes. If user isn't provided or not found, it defaults to you.")
             .addField("ignore", "Toggles playtime tracking. On by default.")
             .addField("invite", "Gives you the link to add the bot to your server.")
             .setFooter(`My prefix is @${bot.user.username}`);
