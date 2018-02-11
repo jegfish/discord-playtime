@@ -63,6 +63,27 @@ class Bot extends Discord.Client {
         if (!(embed in Object.values(pages))) pages.push(embed);
         return pages;
     }
+
+    async user_convert(text) {
+        let result = null;
+        const mention = text.match(/<@!?(\d+)>/);
+        if (mention !== null) {
+            // If text is a mention, fetch the user by their ID from mention
+            result = await this.fetchUser(mention[1]);
+        } else if (!isNaN(parseInt(text))) {
+            // If it's an int, possibly an ID
+            result = await this.fetchUser(text);
+        } else {
+            // Try searching by name#discrim
+            if (text.length > 5 && text.slice(-5, -4) === "#") {
+                const discrim = text.slice(-4);
+                const name = text.slice(0, -5);
+                result = this.users.find(user => user.username === name && user.discriminator === discrim);
+            }
+        }
+
+        return result;
+    }
 }
 
 const bot = new Bot();
