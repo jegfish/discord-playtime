@@ -1,4 +1,6 @@
 {
-    "bot_token": "YOUR BOT TOKEN HERE",
+    "bot_token": "",
+    "dbl_token": "",
+    "post_stats": false,
     "embed_color": "#7289DA"
 }

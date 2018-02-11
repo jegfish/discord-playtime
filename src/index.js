@@ -2,9 +2,15 @@ const Discord = require("discord.js");
 const Enmap = require("enmap");
 const EnmapLevel = require("enmap-level");
 const humanize_duration = require("humanize-duration");
+let DBL, dbl;
 
 const config = require("./config.json");
 const commands = require("./commands.js");
+
+if (config.post_stats) {
+    DBL = require("dblapi.js");
+    dbl = new DBL(config.dbl_token);
+}
 
 class Bot extends Discord.Client {
     constructor() {
@@ -96,6 +102,13 @@ bot.on("ready", () => {
     console.log("-".repeat(15));
     console.log(`Username: ${bot.user.username}#${bot.user.discriminator}`);
     console.log(`ID: ${bot.user.id}`);
+
+    if (config.post_stats) {
+        setInterval(() => {
+            dbl.postStats(bot.guilds.size);
+            console.log("Uploaded guild count to discord bot list.");
+        }, 600000);
+    }
 });
 
 bot.on("error", (e) => console.error(e));
