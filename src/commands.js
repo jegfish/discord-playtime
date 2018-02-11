@@ -12,7 +12,7 @@ const commands = {
             .setTitle("My Commands")
             .addField("help", "Shows this message.")
             .addField("games <page> <user>", "Shows your or another user's game playtimes. If user isn't provided or not found, it defaults to you.")
-            .addField("ignore", "Toggles playtime tracking. On by default.")
+            .addField("ignore", "Toggles playtime tracking. On by default. When toggling to off, your data will be deleted.")
             .addField("invite", "Gives you the link to add the bot to your server.")
             .setFooter(`My prefix is @${bot.user.username}`);
 
