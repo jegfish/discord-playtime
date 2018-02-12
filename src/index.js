@@ -104,7 +104,7 @@ bot.on("ready", () => {
     console.log(`ID: ${bot.user.id}`);
 
     if (config.post_stats) {
-        setInterval(() => {
+        bot.setInterval(() => {
             dbl.postStats(bot.guilds.size);
             console.log("Uploaded guild count to discord bot list.");
         }, 600000);
