@@ -97,11 +97,13 @@ class Bot extends Discord.Client {
 
 const bot = new Bot();
 
-bot.on("ready", () => {
+bot.on("ready", async () => {
     console.log("Logged in:");
     console.log("-".repeat(15));
     console.log(`Username: ${bot.user.username}#${bot.user.discriminator}`);
     console.log(`ID: ${bot.user.id}`);
+
+    await bot.user.setPresence({ game: {name: `Prefix: @${bot.user.username}`} });
 
     if (config.post_stats) {
         bot.setInterval(() => {
