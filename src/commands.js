@@ -43,7 +43,7 @@ const commands = {
         }
 
         let page_text = pages[page];
-        page_text += `\n\n${"-".repeat(20)}\nShowing Page ${page} of ${pages.length}\n\`\`\``;
+        page_text += `\n\n${"-".repeat(22)}\nShowing Page ${page + 1} of ${pages.length}\n\`\`\``;
         message.channel.send(page_text);
     },
 
