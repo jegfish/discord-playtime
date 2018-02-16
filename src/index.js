@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const Enmap = require("enmap");
 const EnmapLevel = require("enmap-level");
 const humanize_duration = require("humanize-duration");
+const table = require("text-table");
 let DBL, dbl;
 
 const config = require("./config.json");
@@ -45,28 +46,24 @@ class Bot extends Discord.Client {
         }
     }
 
-    async paginate_games_embed(games) {
+    async tabulate_games(games) {
         let pages = [];
-        let i = 0;
-
-        function new_embed() {
-            let new_em = new Discord.RichEmbed();
-            new_em.setColor(config.embed_color);
-            return new_em;
-        }
-
-        let embed = new_embed();
-        for (let name in games) {
-            if (i >= 9) {
-                i = 0;
-                pages.push(embed);
-                embed = new_embed();
+        games = Array.from(Object.entries(games));
+        while (games.length > 0) {
+            let page_data = games.slice(0, 11);
+            let arr = [
+                ["Game", "Playtime"],
+                ["----", "--------"]
+            ];
+            for (let i of page_data) {
+                i[1] = humanize_duration(i[1], { largest: 2, round: true });
             }
-
-            embed.addField(name, humanize_duration(games[name], { largest: 2, round: true }), true);
-            i++;
+            arr = arr.concat(page_data);
+            let page_table = table(arr);
+            let page_text = "```\n" + page_table
+            pages.push(page_text);
+            games = games.slice(11);
         }
-        if (!(embed in Object.values(pages))) pages.push(embed);
         return pages;
     }
 
@@ -126,7 +123,7 @@ userID: {
 
     current_game: {
         start: Date,
-        recent: Date    
+        recent: Date
     }
 }
 }

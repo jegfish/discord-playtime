@@ -32,7 +32,7 @@ const commands = {
         }
 
         page = ~~page - 1;
-        let pages = await bot.paginate_games_embed(target_games);
+        let pages = await bot.tabulate_games(target_games);
 
         if (pages.length === 0) {
             message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data for ${target.username}#${target.discriminator}`);
@@ -42,10 +42,9 @@ const commands = {
             page = 0;
         }
 
-        let embed = pages[page];
-        embed.setTitle(`${message.author.username}#${message.author.discriminator} | ${target.username}#${target.discriminator}'s Playtimes`);
-        embed.setFooter(`Showing page ${page + 1} of ${pages.length}.`);
-        message.channel.send({ embed });
+        let page_text = pages[page];
+        page_text += `\n\n${"-".repeat(20)}\nShowing Page ${page} of ${pages.length}\n\`\`\``;
+        message.channel.send(page_text);
     },
 
     "ignore": async (bot, message) => {
