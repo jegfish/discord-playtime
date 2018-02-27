@@ -36,6 +36,7 @@ const commands = {
 
         if (pages.length === 0) {
             message.channel.send(`${message.author.username}#${message.author.discriminator} | I don't have any data for ${target.username}#${target.discriminator}`);
+            return;
         }
 
         if (page < 0 || page > pages.length - 1) {
