@@ -1,6 +1,6 @@
 [![Discord Bots](https://discordbots.org/api/widget/404761989538119691.svg)](https://discordbots.org/bot/404761989538119691)
 
-# Discord Playtime Tracker
+# Playtime Tracker
 A bot that keeps track of how long you've played your games.
 
 # Invite
