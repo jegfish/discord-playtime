@@ -114,7 +114,7 @@ bot.on("ready", async () => {
     console.log(`Username: ${bot.user.username}#${bot.user.discriminator}`);
     console.log(`ID: ${bot.user.id}`);
 
-    await bot.user.setPresence({ game: {name: `prefixes: @${bot.user.username}`} });
+    await bot.user.setPresence({ game: {name: `Prefix: @${bot.user.username}`} });
 
     if (config.post_stats) {
         bot.setInterval(() => {
