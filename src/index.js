@@ -23,19 +23,33 @@ class Bot extends Discord.Client {
         this.on("message", async (message) => await this.handle_message(message));
     }
 
-    get mention() {
-        return `<@${this.user.id}>`;
+    get mentions() {
+        // <@id>  = standard
+        // <@!id> = nickname
+        return [`<@${this.user.id}>`, `<@!${this.user.id}>`];
     }
 
-    get prefix() {
-        return this.mention;
+    get prefixes() {
+        return this.mentions;
     }
 
     async handle_message(message) {
-        // Only respond to explicitly invoked commands and non-bots
-        if (!message.content.startsWith(this.prefix) || message.author.bot) return;
+        // Ignore bots
+        if (message.author.bot) return;
 
-        const args = message.content.slice(this.prefix.length).trim().split(/ +/g);
+        // multi-prefix check because nickname mentions are different than standard mentions
+        let prefixExists = false;
+        let thisPrefix;
+        for (prefix of this.prefixes) {
+            if (message.content.startsWith(prefix)) {
+                prefixExists = true;
+                thisPrefix = prefix;
+                break;
+            }
+        }
+        if (!prefixExists) return;
+
+        const args = message.content.slice(thisPrefix.length).trim().split(/ +/g);
         const command = args.shift().toLowerCase();
 
         if (command in commands) {
@@ -100,7 +114,7 @@ bot.on("ready", async () => {
     console.log(`Username: ${bot.user.username}#${bot.user.discriminator}`);
     console.log(`ID: ${bot.user.id}`);
 
-    await bot.user.setPresence({ game: {name: `Prefix: @${bot.user.username}`} });
+    await bot.user.setPresence({ game: {name: `prefixes: @${bot.user.username}`} });
 
     if (config.post_stats) {
         bot.setInterval(() => {
