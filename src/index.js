@@ -40,7 +40,7 @@ class Bot extends Discord.Client {
         // multi-prefix check because nickname mentions are different than standard mentions
         let prefixExists = false;
         let thisPrefix;
-        for (prefix of this.prefixes) {
+        for (let prefix of this.prefixes) {
             if (message.content.startsWith(prefix)) {
                 prefixExists = true;
                 thisPrefix = prefix;
