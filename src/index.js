@@ -49,6 +49,7 @@ class Bot extends Discord.Client {
     async tabulate_games(games) {
         let pages = [];
         games = Array.from(Object.entries(games));
+        games = await this.sort_games(games);
         while (games.length > 0) {
             let page_data = games.slice(0, 11);
             let arr = [
@@ -65,6 +66,13 @@ class Bot extends Discord.Client {
             games = games.slice(11);
         }
         return pages;
+    }
+
+    async sort_games(games) {
+        function comparePlaytimes(a, b) {
+            return b[1] - a[1];
+        }
+        return games.sort(comparePlaytimes);
     }
 
     async user_convert(text) {
